@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>自动生成公示</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<style type="text/css">
+		body{
+			position:absolute;
+			left: 10px;
+			right: 10px;
+			top: 20px;
+		}
+		#form{
+			width: ;
+			margin: 5px;
+			padding: 5px;
+		}
+		#img1{
+			width: ;
+			margin: 10px;
+			padding: 10px;
+			background: #f0f0f0;
+			text-align: center;
+
+		}
+		#img2{
+			width: ;
+			margin: 10px;
+			padding: 10px;
+			border-style: dashed;
+			border-width: 0.5px;
+			border-color: #e2e2e2;
+			background: #ffffff;
+		}
+		#title1{
+			text-align: center;
+			font-size: 25px;
+			font-family: SimSun,serif;
+			font-weight: bolder;
+			margin: 10px;
+			padding: 15px;
+		}
+		#desc1{
+			text-align: left;
+			font-size: 15px;
+			font-family: SimSun,serif;
+			font-weight: normal;
+			margin: 10px;
+			padding: 15px;
+		}
+		#range1{
+			text-align: left;
+			font-size: 15px;
+			font-family: SimSun,serif;
+			font-weight: normal;
+			margin: 10px;
+			padding: 15px;
+		}
+		#date1{
+			text-align: right;
+			font-size: 15px;
+			font-family: SimSun,serif;
+			font-weight: normal;
+			margin: 10px;
+			padding: 20px;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="./layui/css/layui.css" media="all">
+	<!-- JavaScript代码区域 --><script type="text/javascript" src="./layui/layui.all.js"></script>
+	
+	<script type="text/javascript" src="wangEditor/wangEditor.min.js"></script>
+	<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script type="text/javascript" src="https://cdn.bootcss.com/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+</head>
+<body>
+	<div id="form">
+		<form class="layui-form layui-form-pane">
+			<div class="layui-form-item">
+				<label class="layui-form-label">标题</label>
+				<div class="layui-input-block">
+					<input type="text" id="title" placeholder="请输入标题" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">发布日期</label>
+				<div class="layui-input-block">
+					<input type="text" id="date" placeholder="请选择时间" autocomplete="off" class="layui-input">
+				</div>
+			</div>
+			<div class="layui-form-item">
+				<label class="layui-form-label">公示期</label>
+				<div class="layui-input-block">
+ 					<input type="text" id="range" placeholder="请输入公示天数" autocomplete="off" class="layui-input">
+				</div>
+				</div>
+				<div class="layui-form-item layui-form-text">
+				<label class="layui-form-label">正文</label>
+				<div class="layui-input-block">
+					<textarea id="desc" style="display: none;" class="layui-textarea"></textarea>
+					<div id="desc2"></div>
+				</div>
+			</div>
+
+			<div class="layui-form-item">
+				<div class="layui-input-block layui-btn-group">
+					<button type="reset" class="layui-btn layui-btn-primary"">重置</button>
+					<button type="button" class="layui-btn" onclick="img()"> 预览 </button>
+					<button type="button" class="layui-btn layui-btn-primary" style="display: none;" id="getimg">下载</button>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div id="img1" style="display: none">
+		<div id="img2">
+			<div id="title1"></div>
+			<hr class="layui-bg-red">
+			<div id="desc1"></div>
+			<div id="range1"></div>
+			<div id="date1"></div>
+		</div>
+	</div>
+	<a href="#" id="getimg2" style="display: none"></a>
+	<img src="" id="myimg" style="display: none">
+<!--************************************下面是js函数 ************************************-->
+	<script type="text/javascript">
+		var layer = layui.layer
+			,form = layui.form
+			,laydate = layui.laydate
+			,layer = layui.layer;
+
+		laydate.render({
+			elem: '#date' //指定元素
+			//,range:'~'
+			,format: 'yyyy年MM月dd日'
+		});
+
+		function img(){
+			var title = document.getElementById("title").value;
+			var desc = document.getElementById("desc").value;
+			var range = document.getElementById("range").value;
+			var date = document.getElementById("date").value;
+			if (title=='') {
+				layer.msg('标题不能为空',{
+					icon: 2
+					,offset: '150px'
+				});
+			}else if (date=='') {
+				layer.msg('发布日期不能为空',{
+					icon: 2
+					,offset: '150px'
+				});
+			}else if (range==''||!/^(-|\+)?\d+$/.test(range)) {
+				layer.msg('公示天数不能为空或者非数字',{
+					icon: 2
+					,offset: '150px'
+				});
+			}else if (desc=='') {
+				layer.msg('正文不能为空',{
+					icon: 2
+					,offset: '150px'
+				});
+			}else{
+				document.getElementById('title1').innerHTML = title;
+				document.getElementById('desc1').innerHTML = desc;
+				document.getElementById('range1').innerHTML = "&nbsp;&nbsp;公示期："+range+"天";
+				document.getElementById('date1').innerHTML = date;
+				//document.getElementById('getimg0').getAttributeNode('id') = "getimg";
+				document.getElementById('img1').style.display = "block";
+				document.getElementById('getimg').style.display = "inline";				
+			}
+		}
+	</script>
+	<script type="text/javascript">	
+		$('#getimg').on('click',function(){
+			var myDate=new Date(); //获取当前时间戳
+			html2canvas(document.getElementById("img2"),{
+				onrendered: function(canvas) {
+					//$('#myimg').attr("src",imgURL);
+					var imgURL=canvas.toDataURL("image/png");
+					$('#getimg2').attr('download',"公示"+myDate.getFullYear()+myDate.getMonth()+myDate.getDate()+myDate.getHours()+myDate.getMinutes()+myDate.getSeconds());
+					$('#getimg2').attr('href',imgURL);
+					document.getElementById('getimg2').click();
+				}
+			});
+		});
+	</script>
+    <script type="text/javascript">
+		var E = window.wangEditor;
+		var editor = new E('#desc2');
+		var $desc = $('#desc');
+		editor.customConfig.onchange = function (html) {
+			// 监控变化，同步更新到 textarea
+			$desc.val(html)
+		}
+		editor.customConfig.menus = [
+			'bold',  // 粗体
+			'italic',  // 斜体
+			'underline',  // 下划线
+			'strikeThrough',  // 删除线
+			'foreColor',  // 文字颜色
+			'justify',  // 对齐方式
+			'table',  // 表格
+			'undo',  // 撤销
+			'redo'  // 恢复
+		]
+		editor.create();
+		// 初始化 textarea 的值
+		$desc.val(editor.txt.html())
+    </script>
+</body>
+</html>
